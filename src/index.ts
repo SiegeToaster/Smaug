@@ -1,18 +1,22 @@
+import { Client, Intents } from "discord.js";
 import { config } from 'dotenv'
-import { Client } from 'eris'
-config()
-const bot = new Client(process.env.TOKEN)
+config();
 
-bot.once('ready', () => {
-    console.log(`Logged in as ${bot.user.username}`)
-})
+const client = new Client ({ intents: [Intents.FLAGS.GUILDS] });
 
-bot.on('messageCreate', (message) => {
-    if (message.content.toLocaleLowerCase() === "?ping") {
-        bot.createMessage(message.channel.id, "pong")
-    }
-})
+client.once('ready', () => {
+	console.log('Smaug is now online.');
+});
 
-bot.connect()
+client.login(process.env.DISCORD_TOKEN);
 
-// https://youtu.be/yj8gmGfERgc?t=1930 (32:10)
+client.on('interactionCreate', async interaction => {
+	if (!interaction.isCommand()) return;
+
+	console.log(interaction.commandName);
+	switch (interaction.commandName) {
+		case 'ping': {
+			await interaction.reply('pong.');
+		};
+	}
+});
