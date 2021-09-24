@@ -9,12 +9,14 @@
 	  "strict": true,         
 	  "noImplicitAny": true,
 	  "esModuleInterop": true,
-	  "resolveJsonModule": true
+	  "resolveJsonModule": true,
+	  "skipLibCheck": true, // needed to ignore .d.ts files in node_modules causing errors
 	},
 	  "include": [
 		"src/*"
 	  ],
 	  "exclude": [
-		"temp",
-	  ],
+		"./temp/*",
+		"./node_modules/*" // not working
+	],
 }

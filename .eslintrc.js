@@ -20,7 +20,7 @@ module.exports = {
       'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
       'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
       'semi': ['error', 'never'],
-      "indent": ["warn", 4],
+      "indent": ["warn", "tab"],
       'array-bracket-newline': ['off', 'consistent'],
       'array-element-newline': ['off', {
         multiline: true,
@@ -46,8 +46,8 @@ module.exports = {
         maxEOF: 0, 
       }],
       'no-spaced-func': 'error',
-      'object-curly-spacing': ['error', 'always'],
-      'object-curly-newline': ['error', {
+      'object-curly-spacing': ['warn', 'always'],
+      'object-curly-newline': ['warn', {
         ObjectExpression: {
           minProperties: 4,
           multiline: true,
@@ -55,16 +55,6 @@ module.exports = {
         },
         ObjectPattern: {
           minProperties: 4,
-          multiline: true,
-          consistent: true,
-        },
-        ImportDeclaration: {
-          minProperties: 2,
-          multiline: true,
-          consistent: true,
-        },
-        ExportDeclaration: {
-          minProperties: 2,
           multiline: true,
           consistent: true,
         },
