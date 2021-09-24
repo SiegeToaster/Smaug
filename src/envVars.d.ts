@@ -1,8 +1,8 @@
 declare global {
 	namespace NodeJS {
-	interface ProcessEnv {
-		DISCORD_TOKEN: string
-	}
+		interface ProcessEnv {
+			DISCORD_TOKEN: string
+		}
 	}
 }
 

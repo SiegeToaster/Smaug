@@ -8,7 +8,7 @@
     "dev": "tsc && node build/index.js",
     "lint": "eslint src/**",
     "start": "node build/index.js",
-    "command": "node build/addCommands.js",
+    "command": "tsc && node build/addCommand.js",
 	"test": "node --loader ./index.ts"
   },
   "repository": {

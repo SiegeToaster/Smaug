@@ -5,7 +5,7 @@ import { Routes } from 'discord-api-types/v9'
 
 const commands = [{
 	name: 'ping',
-	description: 'Replies with Pong!',
+	description: 'Replies with Pong.',
 }]
 
 const rest = new REST({ version: '9' }).setToken(process.env.DISCORD_TOKEN);
