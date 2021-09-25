@@ -18,5 +18,9 @@ client.on('interactionCreate', async interaction => {
 	case 'ping': {
 		await interaction.reply('pong.')
 	}
+
+	case 'catjam': {
+		await interaction.reply('https://tenor.com/view/cat-cat-jam-nod-pet-kitty-gif-17932554')
+	}
 	}
 })
