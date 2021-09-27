@@ -1,10 +1,12 @@
 import { config } from 'dotenv'
 config()
-// import { REST } from '@discordjs/rest'
-// import { Routes } from 'discord-api-types/v9'
+import { REST } from '@discordjs/rest'
+import { Routes } from 'discord-api-types/v9'
 import readline from 'readline'
+// const { SlashCommandBuilder } = require('@discordjs/builders');
+// https://discordjs.guide/popular-topics/builders.html#commands
 
-// const rest = new REST({ version: '9' }).setToken(process.env.DISCORD_TOKEN)
+const rest = new REST({ version: '9' }).setToken(process.env.DISCORD_TOKEN)
 const commands: Record<string, string>[] = []
 
 const rl = readline.createInterface({
@@ -21,27 +23,28 @@ rl.question('How many commands are you adding/updating?  Natural Number: ', asyn
 	}
 	await new Promise(async outerResolve => {
 		for (let i = 0; i < numOfCommands; i++) {
-			console.log(i.toString())
+			// console.log(i.toString())
 			await new Promise(innerResolve => {
 				rl.question('Command Name: ', nameInput => {
+					nameInput = nameInput.toLowerCase()
 					rl.question('Command Description: ', descriptionInput => {
 						commands[i] = {}
 						commands[i].name = nameInput
 						commands[i].description = descriptionInput
-						console.log(commands)
+						// console.log(commands)
 						innerResolve(true)
-						console.log('innerResolve')
+						// console.log('innerResolve')
 					})
 				})
 			})
 		}
 		outerResolve(true)
-		console.log('outer resolve')
+		// console.log('outer resolve')
 		rl.close()
 	})
 
 	console.log('commands inputted')
-	console.log(commands)/*
+	console.log(commands)
 	;(async (): Promise<void> => {
 		try {
 			console.log('Started refreshing application (/) commands.')
@@ -57,5 +60,4 @@ rl.question('How many commands are you adding/updating?  Natural Number: ', asyn
 			console.error(error)
 		}
 	})()
-	*/
 })
