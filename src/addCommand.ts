@@ -1,11 +1,11 @@
 import { config } from 'dotenv'
 config()
-import { REST } from '@discordjs/rest'
-import { Routes } from 'discord-api-types/v9'
+// import { REST } from '@discordjs/rest'
+// import { Routes } from 'discord-api-types/v9'
 import readline from 'readline'
 
-const rest = new REST({ version: '9' }).setToken(process.env.DISCORD_TOKEN)
-let commands: Record<string, string>[] = []
+// const rest = new REST({ version: '9' }).setToken(process.env.DISCORD_TOKEN)
+const commands: Record<string, string>[] = []
 
 const rl = readline.createInterface({
 	input: process.stdin,
@@ -19,20 +19,28 @@ rl.question('How many commands are you adding/updating?  Natural Number: ', asyn
 		console.log('invalid amount of commands')
 		process.exit(1)
 	}
-	for (let i = 0; i < numOfCommands; i++) {
-		let forDone: boolean
-		rl.question('Command Name: ', nameInput => {
-			rl.question('Command Description: ', descriptionInput => {
-				rl.close()
-				commands[i] = {}
-				commands[i].name = nameInput
-				commands[i].description = descriptionInput
-				console.log(commands)
-				forDone = true
+	await new Promise(async outerResolve => {
+		for (let i = 0; i < numOfCommands; i++) {
+			console.log(i.toString())
+			await new Promise(innerResolve => {
+				rl.question('Command Name: ', nameInput => {
+					rl.question('Command Description: ', descriptionInput => {
+						commands[i] = {}
+						commands[i].name = nameInput
+						commands[i].description = descriptionInput
+						console.log(commands)
+						innerResolve(true)
+						console.log('innerResolve')
+					})
+				})
 			})
-		})
-		await forDone
-	}
+		}
+		outerResolve(true)
+		console.log('outer resolve')
+		rl.close()
+	})
+
+	console.log('commands inputted')
 	console.log(commands)/*
 	;(async (): Promise<void> => {
 		try {
