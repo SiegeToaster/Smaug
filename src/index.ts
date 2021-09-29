@@ -8,6 +8,11 @@ client.once('ready', () => {
 	console.log('Smaug is now online.')
 })
 
+let interaction
+export { interaction }
+import ping from './commands/general/ping'
+import catjam from './commands/general/catjam'
+
 client.login(process.env.DISCORD_TOKEN)
 
 client.on('interactionCreate', async interaction => {
@@ -16,11 +21,13 @@ client.on('interactionCreate', async interaction => {
 	console.log(interaction.commandName)
 	switch (interaction.commandName) {
 	case 'ping': {
-		await interaction.reply('pong.')
+		ping(interaction)
+		break
 	}
 
 	case 'catjam': {
-		await interaction.reply('https://tenor.com/view/cat-cat-jam-nod-pet-kitty-gif-17932554')
+		catjam(interaction)
+		break
 	}
 	}
 })

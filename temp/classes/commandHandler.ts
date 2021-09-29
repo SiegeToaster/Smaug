@@ -1,10 +1,7 @@
-import Eris from 'eris'
 import { EventEmitter } from 'stream'
 import path from 'path'
 import fs from 'fs'
-import {
-    BaseCommand,
-} from './baseCommand'
+import { BaseCommand } from './baseCommand'
 
 export class templateCommand extends BaseCommand {
     private  bot: Eris.Client
