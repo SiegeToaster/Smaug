@@ -6,6 +6,8 @@ import { Routes } from 'discord-api-types/v9'
 // https://discordjs.guide/popular-topics/builders.html#commands
 
 const rest = new REST({ version: '9' }).setToken(process.env.DISCORD_TOKEN)
+// import { data } from './../src/index'
+
 const commands: Record<string, string>[] = [
 	{
 		name: 'ping',
