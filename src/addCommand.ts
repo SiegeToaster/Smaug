@@ -1,27 +1,21 @@
 import { config } from 'dotenv'
 config()
 import { REST } from '@discordjs/rest'
-import { Routes } from 'discord-api-types/v9'
-// const { SlashCommandBuilder } = require('@discordjs/builders');
-// https://discordjs.guide/popular-topics/builders.html#commands
+import { APIApplicationCommandOption, Routes } from 'discord-api-types/v9'
+import * as commandExports from './commands/commandExports'
+
+const commands: { name: Lowercase<string>, description: string, options: APIApplicationCommandOption[] }[] = []
+let command: keyof typeof commandExports
+for (command in commandExports) {
+	// console.log(commandExports[command].toJSON()) // DEBUG
+	commands.push(commandExports[command].toJSON())
+}
 
 const rest = new REST({ version: '9' }).setToken(process.env.DISCORD_TOKEN)
-// import { data } from './../src/index'
-
-const commands: Record<string, string>[] = [
-	{
-		name: 'ping',
-		description: 'replies with pong.',
-	},
-
-	{
-		name: 'catjam',
-		description: 'sends cat gif.',
-	},
-]
 
 console.log('Commands to be inputted:')
 console.log(commands)
+
 ;(async (): Promise<void> => {
 	try {
 		console.log('Started refreshing application (/) commands.')
