@@ -6,10 +6,12 @@ const client = new Client({ intents: [Intents.FLAGS.GUILDS] })
 
 client.once('ready', () => {
 	console.log('Smaug is now online.')
+	console.log('')
 })
 
 let interaction
 export { interaction }
+
 import ping from './commands/general/ping'
 import catjam from './commands/general/catjam'
 
@@ -18,7 +20,7 @@ client.login(process.env.DISCORD_TOKEN)
 client.on('interactionCreate', async interaction => {
 	if (!interaction.isCommand()) return
 
-	console.log(interaction.commandName)
+	console.log(`Command: ${interaction.commandName}`)
 	switch (interaction.commandName) {
 	case 'ping': {
 		ping(interaction)
