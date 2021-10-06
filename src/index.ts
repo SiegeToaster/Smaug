@@ -14,10 +14,11 @@ export { interaction }
 
 import ping from './commands/general/ping'
 import catjam from './commands/general/catjam'
+import jamtime from './commands/general/jamtime'
 
 client.login(process.env.DISCORD_TOKEN)
 
-client.on('interactionCreate', async interaction => {
+client.on('interactionCreate', interaction => {
 	if (!interaction.isCommand()) return
 
 	console.log(`Command: ${interaction.commandName}`)
@@ -31,5 +32,19 @@ client.on('interactionCreate', async interaction => {
 		catjam(interaction)
 		break
 	}
+
+	case 'jamtime': {
+		jamtime(interaction)
 	}
+	}
+})
+
+client.on('interactionCreate', interaction => {
+	if (!interaction.isButton()) return
+	console.log(interaction)
+
+	/* switch (interaction) {
+
+	} */
+
 })
