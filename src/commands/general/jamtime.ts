@@ -1,4 +1,4 @@
-import { CommandInteraction, MessageActionRow, MessageButton } from "discord.js"
+import { ButtonInteraction, CommandInteraction, MessageActionRow, MessageButton } from "discord.js"
 import { SlashCommandBuilder } from '@discordjs/builders'
 
 export const commandData = new SlashCommandBuilder()
@@ -24,14 +24,14 @@ export default function jamtime(interaction: CommandInteraction): void {
 	//ToDo: create buttons for yes and no; reply present/absent jammer; join music channel once everyone reacts yes (and maybe timeout)
 }
 
-export function jamtimeYesButton(interaction: CommandInteraction): void {
+export function jamtimeYesButton(interaction: ButtonInteraction): void {
 	// @ts-expect-error interaction.member is not null
-	console.log(interaction.member.nickname ? interaction.member.nickname : interaction.member?.user.username)
+	console.log(interaction.member.nickname ? interaction.member.nickname : interaction.member.user.username)
 	
 	// interaction.reply(`${interaction.member.nickname ? interaction.member.nickname : interaction.user.username} present jammer`)
 }
 
-export function jamtimeNoButton(interaction: CommandInteraction): void {
+export function jamtimeNoButton(interaction: ButtonInteraction): void {
 	// @ts-expect-error interaction.member is not null
 	console.log(interaction.member.nickname ? interaction.member.nickname : interaction.member?.user.username)
 	

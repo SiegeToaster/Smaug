@@ -16,6 +16,9 @@ import ping from './commands/general/ping'
 import catjam from './commands/general/catjam'
 import jamtime from './commands/general/jamtime'
 
+import { jamtimeYesButton } from './commands/general/jamtime'
+import { jamtimeNoButton } from './commands/general/jamtime'
+
 client.login(process.env.DISCORD_TOKEN)
 
 client.on('interactionCreate', interaction => {
@@ -41,10 +44,16 @@ client.on('interactionCreate', interaction => {
 
 client.on('interactionCreate', interaction => {
 	if (!interaction.isButton()) return
-	console.log(interaction)
 
-	/* switch (interaction) {
+	console.log(`Button: ${interaction.customId}`)
+	switch (interaction.customId) {
+	case 'yesButton': {
+		jamtimeYesButton(interaction)
+	}
 
-	} */
+	case 'noButton': {
+		jamtimeNoButton(interaction)	
+	}
+	}
 
 })
