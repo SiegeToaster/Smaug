@@ -1,9 +1,19 @@
 import { ButtonInteraction, CommandInteraction, MessageActionRow, MessageButton } from "discord.js"
-import { SlashCommandBuilder } from '@discordjs/builders'
+import { SlashCommandBuilder, SlashCommandBooleanOption, SlashCommandIntegerOption } from '@discordjs/builders'
+
+let startTime: number
 
 export const commandData = new SlashCommandBuilder()
 	.setName('jamtime')
 	.setDescription('Request a jamtime.')
+	.addBooleanOption((option: SlashCommandBooleanOption): SlashCommandBooleanOption => {
+		return option.setName('timeout')
+			.setDescription('Set a timeout?')
+	})
+	.addIntegerOption((option: SlashCommandIntegerOption): SlashCommandIntegerOption => {
+		return option.setName('time')
+			.setDescription('Amount of time for timeout (minutes).  This will automatically set timeout to true.  Default 5.')
+	})
 
 export default function jamtime(interaction: CommandInteraction): void {
 	const row = new MessageActionRow()
@@ -21,19 +31,16 @@ export default function jamtime(interaction: CommandInteraction): void {
 		content: '@everyone jamtime?',
 		components: [row],
 	})
-	//ToDo: create buttons for yes and no; reply present/absent jammer; join music channel once everyone reacts yes (and maybe timeout)
+
+	startTime = Date.now()
+	//ToDo: send message (and later join music channel) when everyone reacts yes; finish timeout; remove previous question if another triggered
 }
 
 export function jamtimeYesButton(interaction: ButtonInteraction): void {
-	// @ts-expect-error interaction.member is not null
-	console.log(interaction.member.nickname ? interaction.member.nickname : interaction.member.user.username)
-	
-	// interaction.reply(`${interaction.member.nickname ? interaction.member.nickname : interaction.user.username} present jammer`)
+	interaction.reply(`<@!${interaction.user.id}> present jammer`)
+	console.log(startTime)
 }
 
 export function jamtimeNoButton(interaction: ButtonInteraction): void {
-	// @ts-expect-error interaction.member is not null
-	console.log(interaction.member.nickname ? interaction.member.nickname : interaction.member?.user.username)
-	
-	// interaction.reply(`${interaction.member.nickname ? interaction.member.nickname : interaction.user.username} absent jammer`)
+	interaction.reply(`<@!${interaction.user.id}> absent jammer`)
 }

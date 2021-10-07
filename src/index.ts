@@ -24,7 +24,7 @@ client.login(process.env.DISCORD_TOKEN)
 client.on('interactionCreate', interaction => {
 	if (!interaction.isCommand()) return
 
-	console.log(`Command: ${interaction.commandName}`)
+	console.log(`\nCommand: ${interaction.commandName}`)
 	switch (interaction.commandName) {
 	case 'ping': {
 		ping(interaction)
@@ -38,6 +38,7 @@ client.on('interactionCreate', interaction => {
 
 	case 'jamtime': {
 		jamtime(interaction)
+		break
 	}
 	}
 })
@@ -45,14 +46,16 @@ client.on('interactionCreate', interaction => {
 client.on('interactionCreate', interaction => {
 	if (!interaction.isButton()) return
 
-	console.log(`Button: ${interaction.customId}`)
+	console.log(`\nButton: ${interaction.customId}`)
 	switch (interaction.customId) {
 	case 'yesButton': {
 		jamtimeYesButton(interaction)
+		break
 	}
 
 	case 'noButton': {
 		jamtimeNoButton(interaction)	
+		break
 	}
 	}
 
