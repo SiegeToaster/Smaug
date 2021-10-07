@@ -15,7 +15,7 @@ export const commandData = new SlashCommandBuilder()
 			.setDescription('Amount of time for timeout (minutes).  This will automatically set timeout to true.  Default 5.')
 	})
 
-export default function jamtime(interaction: CommandInteraction): void {
+export default async function jamtime(interaction: CommandInteraction): Promise<void> {
 	const row = new MessageActionRow()
 		.addComponents(
 			new MessageButton()
@@ -30,6 +30,8 @@ export default function jamtime(interaction: CommandInteraction): void {
 	interaction.reply({
 		content: '@everyone jamtime?',
 		components: [row],
+	}).then(rpl => {
+		setTimeout(() => rpl.delete(), 10000) //! find delete function
 	})
 
 	startTime = Date.now()
