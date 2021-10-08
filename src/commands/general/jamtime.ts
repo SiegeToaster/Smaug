@@ -1,8 +1,6 @@
 import { ButtonInteraction, CommandInteraction, MessageActionRow, MessageButton } from "discord.js"
 import { SlashCommandBuilder, SlashCommandBooleanOption, SlashCommandIntegerOption } from '@discordjs/builders'
 
-let startTime: number
-
 export const commandData = new SlashCommandBuilder()
 	.setName('jamtime')
 	.setDescription('Request a jamtime.')
@@ -16,6 +14,11 @@ export const commandData = new SlashCommandBuilder()
 	})
 
 export default async function jamtime(interaction: CommandInteraction): Promise<void> {
+	let timeoutTime: number = (interaction.options.getInteger('time') ? interaction.options.getInteger('time') * 60 : -1)
+	const hasTimeout: boolean /* Null will never occur after check on next line */ = (interaction.options.getBoolean('timeout') ? true : (timeoutTime != -1 ? true : false))
+	if (timeoutTime === -1 && hasTimeout) timeoutTime = 600
+
+	console.log(`hasTimeout: ${hasTimeout}; timeoutTime: ${timeoutTime}`)
 	const row = new MessageActionRow()
 		.addComponents(
 			new MessageButton()
@@ -30,17 +33,23 @@ export default async function jamtime(interaction: CommandInteraction): Promise<
 	interaction.reply({
 		content: '@everyone jamtime?',
 		components: [row],
-	}).then(rpl => {
-		setTimeout(() => rpl.delete(), 10000) //! find delete function
 	})
 
-	startTime = Date.now()
+	if (hasTimeout) {
+		setTimeout(() => {
+			try {
+				interaction.deleteReply()
+			} catch (error) {
+				console.error('jamtime timeout error: ', error)
+			}
+		}, timeoutTime * 1000)
+	}
+
 	//ToDo: send message (and later join music channel) when everyone reacts yes; finish timeout; remove previous question if another triggered
 }
 
 export function jamtimeYesButton(interaction: ButtonInteraction): void {
 	interaction.reply(`<@!${interaction.user.id}> present jammer`)
-	console.log(startTime)
 }
 
 export function jamtimeNoButton(interaction: ButtonInteraction): void {
