@@ -16,6 +16,7 @@ export const commandData = new SlashCommandBuilder()
 export default async function jamtime(interaction: CommandInteraction): Promise<void> {
 	const timer = (ms: number): Promise<void> => new Promise(res => setTimeout(res, ms))
 
+	// @ts-expect-error checks for null
 	let timeoutTime: number = (interaction.options.getInteger('time') ? interaction.options.getInteger('time') * 60 : -1)
 	const hasTimeout: boolean /* Null will never occur after check on next line */ = (interaction.options.getBoolean('timeout') ? true : (timeoutTime != -1 ? true : false))
 	if (timeoutTime === -1 && hasTimeout) timeoutTime = 600
@@ -51,18 +52,28 @@ export default async function jamtime(interaction: CommandInteraction): Promise<
 		}, timeoutTime * 1000)
 
 		;(async (): Promise<void> => {
+			while (timeoutTime > 0) {
+				await timer(1000)
+				timeoutTime--
+			}
+		})()
+
+		;(async (): Promise<void> => {
 			let whileTestVar = 0
-			while (timeoutTime > 0) { // could make more efficient by making it wait half a second before check
-				if (whileTestVar % 10 === 0) console.log(`passes: ${whileTestVar}\nhasReplied: ${interaction.replied}\n`)
+			while (timeoutTime > 0) {
+				console.log(`passes: ${whileTestVar}`)
+				if (whileTestVar % 10 === 0) console.log(`hasReplied: ${interaction.replied}\n`)
 				whileTestVar++
 				if (interaction.replied) {
 					if (whileTestVar % 10 === 0) console.log('AW YEP!')
 					try {
+						console.log(timeoutTime)
 						embedsArray = [new MessageEmbed()
 							.addField('Timeout Time Remaining:', `${timeoutTime}`)]
 						
+						if (whileTestVar % 10 === 0) console.log(embedsArray[0])
 						interaction.editReply({
-							content: '@everyone jamtime?',
+							content: `@everyone jamtime? ${timeoutTime}`,
 							components: [row],
 							embeds: embedsArray,
 						})
@@ -75,7 +86,7 @@ export default async function jamtime(interaction: CommandInteraction): Promise<
 		})()
 	}
 
-	//ToDo: send message (and later join music channel) when everyone reacts yes; finish timeout; remove previous question if another triggered
+	//ToDo: send message (and later join music channel) when everyone reacts yes; remove previous question if another triggered
 }
 
 export function jamtimeYesButton(interaction: ButtonInteraction): void {
