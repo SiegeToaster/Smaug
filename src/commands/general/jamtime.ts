@@ -1,5 +1,6 @@
 import { ButtonInteraction, CommandInteraction, MessageActionRow, MessageButton, MessageEmbed } from "discord.js"
 import { SlashCommandBuilder, SlashCommandBooleanOption, SlashCommandIntegerOption } from '@discordjs/builders'
+import { default as utilityFunctions } from './../../functions/functionExports'
 
 export const commandData = new SlashCommandBuilder()
 	.setName('jamtime')
@@ -14,14 +15,12 @@ export const commandData = new SlashCommandBuilder()
 	})
 
 export default async function jamtime(interaction: CommandInteraction): Promise<void> {
-	const timer = (ms: number): Promise<void> => new Promise(res => setTimeout(res, ms))
-
 	// @ts-expect-error checks for null
 	let timeoutTime: number = (interaction.options.getInteger('time') ? interaction.options.getInteger('time') * 60 : -1)
-	const hasTimeout: boolean /* Null will never occur after check on next line */ = (interaction.options.getBoolean('timeout') ? true : (timeoutTime != -1 ? true : false))
+	const hasTimeout: boolean = (interaction.options.getBoolean('timeout') ? true : (timeoutTime != -1 ? true : false))
 	if (timeoutTime === -1 && hasTimeout) timeoutTime = 600
 
-	console.log(`hasTimeout: ${hasTimeout}; timeoutTime: ${timeoutTime}`)
+	console.log(`hasTimeout: ${hasTimeout} - timeoutTime: ${timeoutTime}`)
 	const row = new MessageActionRow()
 		.addComponents(
 			new MessageButton()
@@ -53,25 +52,18 @@ export default async function jamtime(interaction: CommandInteraction): Promise<
 
 		;(async (): Promise<void> => {
 			while (timeoutTime > 0) {
-				await timer(1000)
+				await utilityFunctions.timer(1000)
 				timeoutTime--
 			}
 		})()
 
 		;(async (): Promise<void> => {
-			let whileTestVar = 0
 			while (timeoutTime > 0) {
-				console.log(`passes: ${whileTestVar}`)
-				if (whileTestVar % 10 === 0) console.log(`hasReplied: ${interaction.replied}\n`)
-				whileTestVar++
 				if (interaction.replied) {
-					if (whileTestVar % 10 === 0) console.log('AW YEP!')
 					try {
-						console.log(timeoutTime)
 						embedsArray = [new MessageEmbed()
 							.addField('Timeout Time Remaining:', `${timeoutTime}`)]
 						
-						if (whileTestVar % 10 === 0) console.log(embedsArray[0])
 						interaction.editReply({
 							content: `@everyone jamtime? ${timeoutTime}`,
 							components: [row],
@@ -81,7 +73,7 @@ export default async function jamtime(interaction: CommandInteraction): Promise<
 						console.error('jamtime while-edit error: ', error)
 					}
 				}
-				await timer(500)
+				await utilityFunctions.timer(500)
 			}
 		})()
 	}
