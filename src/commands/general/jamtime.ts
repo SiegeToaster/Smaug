@@ -1,4 +1,4 @@
-import { ButtonInteraction, CommandInteraction, MessageActionRow, MessageButton } from "discord.js"
+import { ButtonInteraction, CommandInteraction, MessageActionRow, MessageButton, MessageEmbed } from "discord.js"
 import { SlashCommandBuilder, SlashCommandBooleanOption, SlashCommandIntegerOption } from '@discordjs/builders'
 
 export const commandData = new SlashCommandBuilder()
@@ -14,6 +14,8 @@ export const commandData = new SlashCommandBuilder()
 	})
 
 export default async function jamtime(interaction: CommandInteraction): Promise<void> {
+	const timer = (ms: number): Promise<void> => new Promise(res => setTimeout(res, ms))
+
 	let timeoutTime: number = (interaction.options.getInteger('time') ? interaction.options.getInteger('time') * 60 : -1)
 	const hasTimeout: boolean /* Null will never occur after check on next line */ = (interaction.options.getBoolean('timeout') ? true : (timeoutTime != -1 ? true : false))
 	if (timeoutTime === -1 && hasTimeout) timeoutTime = 600
@@ -30,12 +32,16 @@ export default async function jamtime(interaction: CommandInteraction): Promise<
 				.setLabel('No')
 				.setStyle('PRIMARY'),
 		)
+	let embedsArray: MessageEmbed[] = []
+
 	interaction.reply({
 		content: '@everyone jamtime?',
 		components: [row],
 	})
 
 	if (hasTimeout) {
+		embedsArray = [new MessageEmbed()
+			.addField('Timeout Time Remaining:', `${timeoutTime}`)]
 		setTimeout(() => {
 			try {
 				interaction.deleteReply()
@@ -43,6 +49,30 @@ export default async function jamtime(interaction: CommandInteraction): Promise<
 				console.error('jamtime timeout error: ', error)
 			}
 		}, timeoutTime * 1000)
+
+		;(async (): Promise<void> => {
+			let whileTestVar = 0
+			while (timeoutTime > 0) { // could make more efficient by making it wait half a second before check
+				if (whileTestVar % 10 === 0) console.log(`passes: ${whileTestVar}\nhasReplied: ${interaction.replied}\n`)
+				whileTestVar++
+				if (interaction.replied) {
+					if (whileTestVar % 10 === 0) console.log('AW YEP!')
+					try {
+						embedsArray = [new MessageEmbed()
+							.addField('Timeout Time Remaining:', `${timeoutTime}`)]
+						
+						interaction.editReply({
+							content: '@everyone jamtime?',
+							components: [row],
+							embeds: embedsArray,
+						})
+					} catch (error) {
+						console.error('jamtime while-edit error: ', error)
+					}
+				}
+				await timer(500)
+			}
+		})()
 	}
 
 	//ToDo: send message (and later join music channel) when everyone reacts yes; finish timeout; remove previous question if another triggered
