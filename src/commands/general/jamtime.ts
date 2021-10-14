@@ -15,6 +15,7 @@ export const commandData = new SlashCommandBuilder()
 	})
 
 export default async function jamtime(interaction: CommandInteraction): Promise<void> {
+	
 	// @ts-expect-error checks for null
 	let timeoutTime: number = (interaction.options.getInteger('time') ? interaction.options.getInteger('time') * 60 : -1)
 	const hasTimeout: boolean = (interaction.options.getBoolean('timeout') ? true : (timeoutTime != -1 ? true : false))
@@ -53,6 +54,7 @@ export default async function jamtime(interaction: CommandInteraction): Promise<
 		;(async (): Promise<void> => {
 			while (timeoutTime > 0) {
 				await utilityFunctions.timer(1000)
+				console.log(timeoutTime)
 				timeoutTime--
 			}
 		})()
@@ -61,11 +63,13 @@ export default async function jamtime(interaction: CommandInteraction): Promise<
 			while (timeoutTime > 0) {
 				if (interaction.replied) {
 					try {
+						console.log(timeoutTime)
 						embedsArray = [new MessageEmbed()
-							.addField('Timeout Time Remaining:', `${timeoutTime}`)]
+							.addField('Timeout Time Remaining:', `${utilityFunctions.secondsToMinutes(timeoutTime, true)}`)]
 						
+						console.log(embedsArray)
 						interaction.editReply({
-							content: `@everyone jamtime? ${timeoutTime}`,
+							content: `@everyone jamtime?`,
 							components: [row],
 							embeds: embedsArray,
 						})

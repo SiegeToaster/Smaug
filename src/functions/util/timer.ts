@@ -1,3 +1,1 @@
-export default async function(ms: number): Promise<void> {
-	new Promise(res => setTimeout(res, ms))
-}
+export default (ms: number): Promise<void> => new Promise(res => setTimeout(res, ms))

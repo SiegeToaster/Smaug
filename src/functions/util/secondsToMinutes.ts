@@ -1,6 +1,11 @@
-export default function secondsToMinutes(seconds: number): number[] {
-	const minutes = seconds % 60
+export default function secondsToMinutes(seconds: number, isString?: boolean): number[] | string {
+	if (isString == null || isString == undefined) isString = false
+	const minutes = Math.floor(seconds / 60)
 	seconds -= minutes * 60
 
-	return [minutes, seconds]
+	if (isString) {
+		return `${minutes} minutes, ${seconds} seconds`
+	} else {
+		return [minutes, seconds]
+	}
 }
