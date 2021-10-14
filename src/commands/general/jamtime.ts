@@ -1,6 +1,20 @@
-import { ButtonInteraction, CommandInteraction, MessageActionRow, MessageButton, MessageEmbed } from "discord.js"
-import { SlashCommandBuilder, SlashCommandBooleanOption, SlashCommandIntegerOption } from '@discordjs/builders'
+import {
+	ButtonInteraction,
+	CommandInteraction,
+	MessageActionRow,
+	MessageButton,
+	MessageEmbed,
+	User,
+} from "discord.js"
+
+import {
+	SlashCommandBuilder,
+	SlashCommandBooleanOption,
+	SlashCommandIntegerOption,
+} from '@discordjs/builders'
+
 import { default as utilityFunctions } from './../../functions/functionExports'
+
 
 export const commandData = new SlashCommandBuilder()
 	.setName('jamtime')
@@ -13,6 +27,9 @@ export const commandData = new SlashCommandBuilder()
 		return option.setName('time')
 			.setDescription('Amount of time for timeout (minutes).  This will automatically set timeout to true.  Default 5.')
 	})
+
+const jammers: User[] = []
+const nonJammers: User[] = []
 
 export default async function jamtime(interaction: CommandInteraction): Promise<void> {
 	
@@ -54,7 +71,6 @@ export default async function jamtime(interaction: CommandInteraction): Promise<
 		;(async (): Promise<void> => {
 			while (timeoutTime > 0) {
 				await utilityFunctions.timer(1000)
-				console.log(timeoutTime)
 				timeoutTime--
 			}
 		})()
@@ -63,11 +79,9 @@ export default async function jamtime(interaction: CommandInteraction): Promise<
 			while (timeoutTime > 0) {
 				if (interaction.replied) {
 					try {
-						console.log(timeoutTime)
 						embedsArray = [new MessageEmbed()
 							.addField('Timeout Time Remaining:', `${utilityFunctions.secondsToMinutes(timeoutTime, true)}`)]
 						
-						console.log(embedsArray)
 						interaction.editReply({
 							content: `@everyone jamtime?`,
 							components: [row],
@@ -87,8 +101,10 @@ export default async function jamtime(interaction: CommandInteraction): Promise<
 
 export function jamtimeYesButton(interaction: ButtonInteraction): void {
 	interaction.reply(`<@!${interaction.user.id}> present jammer`)
+	jammers.push(interaction.user)
 }
 
 export function jamtimeNoButton(interaction: ButtonInteraction): void {
 	interaction.reply(`<@!${interaction.user.id}> absent jammer`)
+	nonJammers.push(interaction.user)
 }
