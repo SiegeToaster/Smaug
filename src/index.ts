@@ -1,8 +1,10 @@
-import { Client, Intents } from "discord.js"
+import { Client } from "discord.js"
 import { config } from 'dotenv'
 config()
 
-const client = new Client({ intents: [Intents.FLAGS.GUILDS] })
+const client = new Client({ 
+	intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_PRESENCES", "GUILD_MEMBERS"],
+})
 
 client.once('ready', () => {
 	console.log('Smaug is now online.')

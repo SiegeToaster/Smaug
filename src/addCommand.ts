@@ -1,10 +1,12 @@
 import { config } from 'dotenv'
 config()
 import { REST } from '@discordjs/rest'
-import { APIApplicationCommandOption, Routes } from 'discord-api-types/v9'
+import { APIApplicationCommandOption, Routes } from 'discord-api-types'
 import * as commandExports from './commands/commandExports'
 
-const commands: { name: Lowercase<string>, description: string, options: APIApplicationCommandOption[] }[] = []
+// eslint-disable-next-line camelcase
+// const commands: { name: Lowercase<string>, description: string, options: APIApplicationCommandOption[], default_permission: boolean | undefined }[] = []
+const commands = [] // ToDo: figure out the tyeps for this
 let command: keyof typeof commandExports
 for (command in commandExports) {
 	// console.log(commandExports[command].toJSON()) // DEBUG

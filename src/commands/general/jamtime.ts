@@ -57,6 +57,10 @@ export default async function jamtime(interaction: CommandInteraction): Promise<
 		components: [row],
 	})
 
+	;(async (): Promise<void> => {
+		console.log(await interaction.guild?.members.list())
+	})()
+
 	if (hasTimeout) {
 		embedsArray = [new MessageEmbed()
 			.addField('Timeout Time Remaining:', `${timeoutTime}`)]
@@ -74,7 +78,6 @@ export default async function jamtime(interaction: CommandInteraction): Promise<
 				timeoutTime--
 			}
 		})()
-
 		;(async (): Promise<void> => {
 			while (timeoutTime > 0) {
 				if (interaction.replied) {
