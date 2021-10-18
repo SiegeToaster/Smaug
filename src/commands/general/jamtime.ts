@@ -62,23 +62,7 @@ export default async function jamtime(interaction: CommandInteraction): Promise<
 	})()
 
 	if (hasTimeout) {
-		embedsArray = [new MessageEmbed()
-			.addField('Timeout Time Remaining:', `${timeoutTime}`)]
-		setTimeout(() => {
-			try {
-				interaction.deleteReply()
-			} catch (error) {
-				console.error('jamtime timeout error: ', error)
-			}
-		}, timeoutTime * 1000)
-
-		;(async (): Promise<void> => {
-			while (timeoutTime > 0) {
-				await utilityFunctions.timer(1000)
-				timeoutTime--
-			}
-		})()
-		;(async (): Promise<void> => {
+		(async (): Promise<void> => {
 			while (timeoutTime > 0) {
 				if (interaction.replied) {
 					try {
@@ -94,8 +78,10 @@ export default async function jamtime(interaction: CommandInteraction): Promise<
 						console.error('jamtime while-edit error: ', error)
 					}
 				}
-				await utilityFunctions.timer(500)
+				await utilityFunctions.timer(1000)
+				timeoutTime--
 			}
+			if (interaction.replied) interaction.deleteReply()
 		})()
 	}
 
