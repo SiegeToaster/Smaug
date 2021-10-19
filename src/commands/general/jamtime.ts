@@ -5,6 +5,8 @@ import {
 	MessageButton,
 	MessageEmbed,
 	User,
+	GuildMember,
+	// Message,
 } from "discord.js"
 
 import {
@@ -29,7 +31,9 @@ export const commandData = new SlashCommandBuilder()
 	})
 
 const jammers: User[] = []
+let jammersString = ' '
 const nonJammers: User[] = []
+let nonJammersString = ' '
 
 export default async function jamtime(interaction: CommandInteraction): Promise<void> {
 	
@@ -50,7 +54,13 @@ export default async function jamtime(interaction: CommandInteraction): Promise<
 				.setLabel('No')
 				.setStyle('PRIMARY'),
 		)
-	let embedsArray: MessageEmbed[] = []
+
+	updateJammerString()
+	let embedsArray: MessageEmbed[] = [
+		new MessageEmbed()
+			.addField('Present Jammers:', `${jammersString}`, true)
+			.addField('Absent Jammers:', `${nonJammersString}`, true),
+	]
 
 	interaction.reply({
 		content: '@everyone jamtime?',
@@ -58,7 +68,11 @@ export default async function jamtime(interaction: CommandInteraction): Promise<
 	})
 
 	;(async (): Promise<void> => {
-		console.log(await interaction.guild?.members.list())
+		let tempCount = 0
+		;(await interaction.guild?.members.fetch())?.forEach((member: GuildMember) => {
+			if (!member.user.bot) tempCount++
+		})
+		console.log(tempCount)
 	})()
 
 	if (hasTimeout) {
@@ -66,8 +80,11 @@ export default async function jamtime(interaction: CommandInteraction): Promise<
 			while (timeoutTime > 0) {
 				if (interaction.replied) {
 					try {
+						updateJammerString()
 						embedsArray = [new MessageEmbed()
-							.addField('Timeout Time Remaining:', `${utilityFunctions.secondsToMinutes(timeoutTime, true)}`)]
+							.addField('Timeout Time Remaining:', `${utilityFunctions.secondsToMinutes(timeoutTime, true)}`)
+							.addField('Present Jammers:', `${jammersString}`, true)
+							.addField('Absent Jammers:', `${nonJammersString}`, true)]
 						
 						interaction.editReply({
 							content: `@everyone jamtime?`,
@@ -83,6 +100,8 @@ export default async function jamtime(interaction: CommandInteraction): Promise<
 			}
 			if (interaction.replied) interaction.deleteReply()
 		})()
+	} else {
+		// ToDo: embed to display reacted users
 	}
 
 	//ToDo: send message (and later join music channel) when everyone reacts yes; remove previous question if another triggered
@@ -96,4 +115,14 @@ export function jamtimeYesButton(interaction: ButtonInteraction): void {
 export function jamtimeNoButton(interaction: ButtonInteraction): void {
 	interaction.reply(`<@!${interaction.user.id}> absent jammer`)
 	nonJammers.push(interaction.user)
+}
+
+function updateJammerString(): void {
+	jammers.forEach((jammer: User) => {
+		jammersString += `${jammer}\n`
+	})
+
+	nonJammers.forEach((nonJammer: User) => {
+		nonJammersString += `${nonJammer}\n`
+	})
 }
