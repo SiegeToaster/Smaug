@@ -30,9 +30,7 @@ export const commandData = new SlashCommandBuilder()
 			.setDescription('Amount of time for timeout (minutes).  This will automatically set timeout to true.  Default 5.')
 	})
 
-const jammers: User[] = []
 let jammersString = ' '
-const nonJammers: User[] = []
 let nonJammersString = ' '
 
 export default async function jamtime(interaction: CommandInteraction): Promise<void> {
@@ -55,11 +53,8 @@ export default async function jamtime(interaction: CommandInteraction): Promise<
 				.setStyle('PRIMARY'),
 		)
 
-	updateJammerString()
 	let embedsArray: MessageEmbed[] = [
-		new MessageEmbed()
-			.addField('Present Jammers:', `${jammersString}`, true)
-			.addField('Absent Jammers:', `${nonJammersString}`, true),
+		new MessageEmbed(),
 	]
 
 	interaction.reply({
@@ -80,12 +75,12 @@ export default async function jamtime(interaction: CommandInteraction): Promise<
 			while (timeoutTime > 0) {
 				if (interaction.replied) {
 					try {
-						updateJammerString()
 						embedsArray = [new MessageEmbed()
-							.addField('Timeout Time Remaining:', `${utilityFunctions.secondsToMinutes(timeoutTime, true)}`)
-							.addField('Present Jammers:', `${jammersString}`, true)
-							.addField('Absent Jammers:', `${nonJammersString}`, true)]
-						
+							.addField('Timeout Time Remaining:', `${utilityFunctions.secondsToMinutes(timeoutTime, true)}`)]
+
+						if (jammersString != '') embedsArray[0].addField('Present Jammers:', `${jammersString}`, true)
+						if (nonJammersString != '') embedsArray[0].addField('Absent Jammers:', `${nonJammersString}`, true)
+							
 						interaction.editReply({
 							content: `@everyone jamtime?`,
 							components: [row],
@@ -107,22 +102,16 @@ export default async function jamtime(interaction: CommandInteraction): Promise<
 	//ToDo: send message (and later join music channel) when everyone reacts yes; remove previous question if another triggered
 }
 
-export function jamtimeYesButton(interaction: ButtonInteraction): void {
+export async function jamtimeYesButton(interaction: ButtonInteraction): Promise<void> {
 	interaction.reply(`<@!${interaction.user.id}> present jammer`)
-	jammers.push(interaction.user)
+
+	const user = await interaction.guild?.members.fetch(interaction.user.id)
+	jammersString += `${user?.nickname ? user.nickname : user?.user.username}\n`
 }
 
-export function jamtimeNoButton(interaction: ButtonInteraction): void {
+export async function jamtimeNoButton(interaction: ButtonInteraction): Promise<void> {
 	interaction.reply(`<@!${interaction.user.id}> absent jammer`)
-	nonJammers.push(interaction.user)
-}
 
-function updateJammerString(): void {
-	jammers.forEach((jammer: User) => {
-		jammersString += `${jammer}\n`
-	})
-
-	nonJammers.forEach((nonJammer: User) => {
-		nonJammersString += `${nonJammer}\n`
-	})
+	const user = await interaction.guild?.members.fetch(interaction.user.id)
+	nonJammersString += `${user?.nickname ? user.nickname : user?.user.username}\n`
 }
