@@ -4,9 +4,6 @@ import {
 	MessageActionRow,
 	MessageButton,
 	MessageEmbed,
-	User,
-	GuildMember,
-	// Message,
 } from "discord.js"
 
 import {
@@ -16,7 +13,6 @@ import {
 } from '@discordjs/builders'
 
 import { default as utilityFunctions } from './../../functions/functionExports'
-
 
 export const commandData = new SlashCommandBuilder()
 	.setName('jamtime')
@@ -30,8 +26,8 @@ export const commandData = new SlashCommandBuilder()
 			.setDescription('Amount of time for timeout (minutes).  This will automatically set timeout to true.  Default 5.')
 	})
 
-let jammersString = ' '
-let nonJammersString = ' '
+let jammersString = '\u200b'
+let nonJammersString = '\u200b'
 
 export default async function jamtime(interaction: CommandInteraction): Promise<void> {
 	
@@ -62,24 +58,15 @@ export default async function jamtime(interaction: CommandInteraction): Promise<
 		components: [row],
 	})
 
-	;(async (): Promise<void> => {
-		let tempCount = 0
-		;(await interaction.guild?.members.fetch())?.forEach((member: GuildMember) => {
-			if (!member.user.bot) tempCount++
-		})
-		console.log(tempCount)
-	})()
-
 	if (hasTimeout) {
 		(async (): Promise<void> => {
 			while (timeoutTime > 0) {
 				if (interaction.replied) {
 					try {
 						embedsArray = [new MessageEmbed()
-							.addField('Timeout Time Remaining:', `${utilityFunctions.secondsToMinutes(timeoutTime, true)}`)]
-
-						if (jammersString != '') embedsArray[0].addField('Present Jammers:', `${jammersString}`, true)
-						if (nonJammersString != '') embedsArray[0].addField('Absent Jammers:', `${nonJammersString}`, true)
+							.addField('Timeout Time Remaining:', `${utilityFunctions.secondsToMinutes(timeoutTime, true)}`)
+							.addField('Present Jammers:', `${jammersString}`, true)
+							.addField('Absent Jammers:', `${nonJammersString}`, true)]
 							
 						interaction.editReply({
 							content: `@everyone jamtime?`,
@@ -106,12 +93,35 @@ export async function jamtimeYesButton(interaction: ButtonInteraction): Promise<
 	interaction.reply(`<@!${interaction.user.id}> present jammer`)
 
 	const user = await interaction.guild?.members.fetch(interaction.user.id)
-	jammersString += `${user?.nickname ? user.nickname : user?.user.username}\n`
+	console.log(jammersString)
+	jammersString == '\u200b' ?
+		jammersString = `${user?.nickname ? user.nickname : user?.user.username}` :
+		jammersString += `\n${user?.nickname ? user.nickname : user?.user.username}`
+
+	const totalJammers = (jammersString == '\u200b' ? 0 : jammersString.split('\n').length) + (nonJammersString == '\u200b' ? 0 : jammersString.split('\n').length)
+	console.log(totalJammers)
+	console.log(await utilityFunctions.countGuildMembers(interaction.guild))
+	if (totalJammers >= (await utilityFunctions.countGuildMembers(interaction.guild))) {
+		console.log('all members reacted')
+	}
+	console.log(jammersString)
+
 }
 
 export async function jamtimeNoButton(interaction: ButtonInteraction): Promise<void> {
 	interaction.reply(`<@!${interaction.user.id}> absent jammer`)
 
 	const user = await interaction.guild?.members.fetch(interaction.user.id)
-	nonJammersString += `${user?.nickname ? user.nickname : user?.user.username}\n`
+	console.log(nonJammersString)
+	nonJammersString == '\u200b' ?
+		nonJammersString = `${user?.nickname ? user.nickname : user?.user.username}` :
+		nonJammersString += `\n${user?.nickname ? user.nickname : user?.user.username}`
+		
+	const totalJammers = (jammersString == '\u200b' ? 0 : jammersString.split('\n').length) + (nonJammersString == '\u200b' ? 0 : jammersString.split('\n').length)
+	console.log(totalJammers)
+	console.log(await utilityFunctions.countGuildMembers(interaction.guild))
+	if (totalJammers >= (await utilityFunctions.countGuildMembers(interaction.guild))) {
+		console.log('all members reacted')
+	}
+	console.log(nonJammersString)
 }
