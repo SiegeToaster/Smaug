@@ -12,7 +12,7 @@ import {
 	SlashCommandIntegerOption,
 } from '@discordjs/builders'
 
-import { default as utilityFunctions } from './../../functions/functionExports'
+import { utilityFunctions } from './../../functions/functionExports'
 
 export const commandData = new SlashCommandBuilder()
 	.setName('jamtime')
@@ -92,11 +92,10 @@ export default async function jamtime(interaction: CommandInteraction): Promise<
 export async function jamtimeYesButton(interaction: ButtonInteraction): Promise<void> {
 	interaction.reply(`<@!${interaction.user.id}> present jammer`)
 
-	const user = await interaction.guild?.members.fetch(interaction.user.id)
 	console.log(jammersString)
 	jammersString == '\u200b' ?
-		jammersString = `${user?.nickname ? user.nickname : user?.user.username}` :
-		jammersString += `\n${user?.nickname ? user.nickname : user?.user.username}`
+		jammersString = `<@!${interaction.user.id}>` :
+		jammersString += `\n<@!${interaction.user.id}>`
 
 	const totalJammers = (jammersString == '\u200b' ? 0 : jammersString.split('\n').length) + (nonJammersString == '\u200b' ? 0 : jammersString.split('\n').length)
 	console.log(totalJammers)
@@ -111,11 +110,10 @@ export async function jamtimeYesButton(interaction: ButtonInteraction): Promise<
 export async function jamtimeNoButton(interaction: ButtonInteraction): Promise<void> {
 	interaction.reply(`<@!${interaction.user.id}> absent jammer`)
 
-	const user = await interaction.guild?.members.fetch(interaction.user.id)
 	console.log(nonJammersString)
 	nonJammersString == '\u200b' ?
-		nonJammersString = `${user?.nickname ? user.nickname : user?.user.username}` :
-		nonJammersString += `\n${user?.nickname ? user.nickname : user?.user.username}`
+		nonJammersString = `<@!${interaction.user.id}>` :
+		nonJammersString += `\n<@!${interaction.user.id}>`
 		
 	const totalJammers = (jammersString == '\u200b' ? 0 : jammersString.split('\n').length) + (nonJammersString == '\u200b' ? 0 : jammersString.split('\n').length)
 	console.log(totalJammers)
