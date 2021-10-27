@@ -1,5 +1,4 @@
 import {
-	ButtonInteraction,
 	CommandInteraction,
 	MessageActionRow,
 	MessageButton,
@@ -11,6 +10,7 @@ import {
 	SlashCommandBooleanOption,
 	SlashCommandIntegerOption,
 } from '@discordjs/builders'
+
 
 import { utilityFunctions } from './../../functions/functionExports'
 
@@ -29,6 +29,9 @@ export const commandData = new SlashCommandBuilder()
 let jammersString = '\u200b'
 let nonJammersString = '\u200b'
 
+// @ts-expect-error not dealing with stupid types
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+const filter = (interaction) => interaction.customId === 'yesButton' || interaction.customId === 'noButton'
 export default async function jamtime(interaction: CommandInteraction): Promise<void> {
 	
 	// @ts-expect-error checks for null
@@ -37,21 +40,81 @@ export default async function jamtime(interaction: CommandInteraction): Promise<
 	if (timeoutTime === -1 && hasTimeout) timeoutTime = 600
 
 	console.log(`hasTimeout: ${hasTimeout} - timeoutTime: ${timeoutTime}`)
+
+	jammersString = '\u200b'
+	nonJammersString = '\u200b'
+
 	const row = new MessageActionRow()
 		.addComponents(
 			new MessageButton()
 				.setCustomId('yesButton')
 				.setLabel('Yes')
-				.setStyle('PRIMARY'),
+				.setStyle('SUCCESS'),
 			new MessageButton()
 				.setCustomId('noButton')
 				.setLabel('No')
-				.setStyle('PRIMARY'),
+				.setStyle('DANGER'),
 		)
 
 	let embedsArray: MessageEmbed[] = [
 		new MessageEmbed(),
 	]
+
+	const collector = interaction.channel?.createMessageComponentCollector({ filter })
+	collector?.on('collect', async i => {
+		switch (i.customId) {
+		case 'yesButton': {
+			const userReacted = !(jammersString.search(`${i.user.id}`) !== -1 || nonJammersString.search(`${i.user.id}`) !== -1)
+			if (userReacted) {
+				jammersString == '\u200b' ?
+					jammersString = `<@!${i.user.id}>` :
+					jammersString += `\n<@!${i.user.id}>`
+			}
+			embedsArray = [new MessageEmbed()]
+			if (hasTimeout) embedsArray[0].addField('Timeout Time Remaining:', `${utilityFunctions.secondsToMinutes(timeoutTime, true)}`)
+			embedsArray[0]
+				.addField('Present Jammers:', `${jammersString}`, true)
+				.addField('Absent Jammers:', `${nonJammersString}`, true)
+			await i.update({
+				content: `@everyone jamtime?`,
+				components: [row],
+				embeds: embedsArray,
+			})
+			const totalJammers = (jammersString == '\u200b' ? 0 : jammersString.split('\n').length) + (nonJammersString == '\u200b' ? 0 : jammersString.split('\n').length)
+			if (totalJammers >= (await utilityFunctions.countGuildMembers(interaction.guild))) {
+				console.log('all members reacted')
+			}
+			if (userReacted)
+				await i.followUp(`<@!${i.user.id}> Present Jammer`)
+			break
+		}
+	
+		case 'noButton': {
+			const userReacted = !(jammersString.search(`${i.user.id}`) !== -1 || nonJammersString.search(`${i.user.id}`) !== -1)
+			if (userReacted) {
+				nonJammersString == '\u200b' ?
+					nonJammersString = `<@!${i.user.id}>` :
+					nonJammersString += `\n<@!${i.user.id}>`
+			}
+			embedsArray = [new MessageEmbed()]
+			if (hasTimeout) embedsArray[0].addField('Timeout Time Remaining:', `${utilityFunctions.secondsToMinutes(timeoutTime, true)}`)
+			embedsArray[0]
+				.addField('Present Jammers:', `${jammersString}`, true)
+				.addField('Absent Jammers:', `${nonJammersString}`, true)
+			await i.update({
+				content: `@everyone jamtime?`,
+				components: [row],
+				embeds: embedsArray,
+			})
+			if ((jammersString == '\u200b' ? 0 : jammersString.split('\n').length) + (nonJammersString == '\u200b' ? 0 : jammersString.split('\n').length) >= (await utilityFunctions.countGuildMembers(interaction.guild))) {
+				console.log('all members reacted')
+			}
+			if (userReacted)
+				await i.followUp(`<@!${i.user.id}> Absent Jammer`)
+			break
+		}
+		}
+	})
 
 	interaction.reply({
 		content: '@everyone jamtime?',
@@ -61,65 +124,12 @@ export default async function jamtime(interaction: CommandInteraction): Promise<
 	if (hasTimeout) {
 		(async (): Promise<void> => {
 			while (timeoutTime > 0) {
-				if (interaction.replied) {
-					try {
-						embedsArray = [new MessageEmbed()
-							.addField('Timeout Time Remaining:', `${utilityFunctions.secondsToMinutes(timeoutTime, true)}`)
-							.addField('Present Jammers:', `${jammersString}`, true)
-							.addField('Absent Jammers:', `${nonJammersString}`, true)]
-							
-						interaction.editReply({
-							content: `@everyone jamtime?`,
-							components: [row],
-							embeds: embedsArray,
-						})
-					} catch (error) {
-						console.error('jamtime while-edit error: ', error)
-					}
-				}
 				await utilityFunctions.timer(1000)
 				timeoutTime--
 			}
 			if (interaction.replied) interaction.deleteReply()
-		})()
-	} else {
-		// ToDo: embed to display reacted users
+		})
 	}
 
 	//ToDo: send message (and later join music channel) when everyone reacts yes; remove previous question if another triggered
-}
-
-export async function jamtimeYesButton(interaction: ButtonInteraction): Promise<void> {
-	interaction.reply(`<@!${interaction.user.id}> present jammer`)
-
-	console.log(jammersString)
-	jammersString == '\u200b' ?
-		jammersString = `<@!${interaction.user.id}>` :
-		jammersString += `\n<@!${interaction.user.id}>`
-
-	const totalJammers = (jammersString == '\u200b' ? 0 : jammersString.split('\n').length) + (nonJammersString == '\u200b' ? 0 : jammersString.split('\n').length)
-	console.log(totalJammers)
-	console.log(await utilityFunctions.countGuildMembers(interaction.guild))
-	if (totalJammers >= (await utilityFunctions.countGuildMembers(interaction.guild))) {
-		console.log('all members reacted')
-	}
-	console.log(jammersString)
-
-}
-
-export async function jamtimeNoButton(interaction: ButtonInteraction): Promise<void> {
-	interaction.reply(`<@!${interaction.user.id}> absent jammer`)
-
-	console.log(nonJammersString)
-	nonJammersString == '\u200b' ?
-		nonJammersString = `<@!${interaction.user.id}>` :
-		nonJammersString += `\n<@!${interaction.user.id}>`
-		
-	const totalJammers = (jammersString == '\u200b' ? 0 : jammersString.split('\n').length) + (nonJammersString == '\u200b' ? 0 : jammersString.split('\n').length)
-	console.log(totalJammers)
-	console.log(await utilityFunctions.countGuildMembers(interaction.guild))
-	if (totalJammers >= (await utilityFunctions.countGuildMembers(interaction.guild))) {
-		console.log('all members reacted')
-	}
-	console.log(nonJammersString)
 }
