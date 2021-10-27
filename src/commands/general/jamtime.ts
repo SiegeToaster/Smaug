@@ -135,5 +135,5 @@ export default async function jamtime(interaction: CommandInteraction): Promise<
 		})
 	}
 
-	//ToDo: send message (and later join music channel) when everyone reacts yes; remove previous question if another triggered
+	//ToDo: join music channel when everyone reacts yes; remove previous question if another triggered
 }
