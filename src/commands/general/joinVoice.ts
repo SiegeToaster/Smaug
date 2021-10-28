@@ -1,4 +1,5 @@
-import { CommandInteraction,
+import {
+	CommandInteraction,
 	Client,
 	VoiceChannel,
 	Intents,
@@ -12,10 +13,11 @@ import {
 	StreamType,
 	AudioPlayerStatus,
 	VoiceConnectionStatus,
-} from '@discordjs/voice';
-import { createDiscordJSAdapter } from './adapter';
+} from '@discordjs/voice'
+// import { createDiscordJSAdapter } from './adapter';
+// https://github.com/discordjs/voice/blob/main/examples/basic/
 
-const player = createAudioPlayer();
+const player = createAudioPlayer()
 
 export const commandData = new SlashCommandBuilder()
 	.setName('joinvoice')
