@@ -1,7 +1,7 @@
 import { config } from 'dotenv'
 config()
 import { REST } from '@discordjs/rest'
-import { APIApplicationCommandOption, Routes } from 'discord-api-types'
+import { Routes } from 'discord-api-types/v9'
 import * as commandExports from './commands/commandExports'
 
 // eslint-disable-next-line camelcase

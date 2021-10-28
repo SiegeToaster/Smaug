@@ -17,6 +17,7 @@ export { interaction }
 import ping from './commands/general/ping'
 import catjam from './commands/general/catjam'
 import jamtime from './commands/general/jamtime'
+import joinVoice from './commands/general/joinVoice'
 
 client.login(process.env.DISCORD_TOKEN)
 
@@ -37,6 +38,11 @@ client.on('interactionCreate', interaction => {
 
 	case 'jamtime': {
 		jamtime(interaction)
+		break
+	}
+
+	case 'joinvoice': {
+		joinVoice(interaction)
 		break
 	}
 	}

@@ -7,3 +7,7 @@ export const utilityFunctions = {
 	timer,
 	countGuildMembers,
 }
+
+export const musicFunctions = {
+	
+}
