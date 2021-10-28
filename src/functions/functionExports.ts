@@ -8,6 +8,12 @@ export const utilityFunctions = {
 	countGuildMembers,
 }
 
+
+import createDiscordJSAdapter from "./music/createDiscordJSAdapter"
+import playSong from "./music/playSong"
+import connectToChannel from "./music/connectToChannel"
 export const musicFunctions = {
-	
+	createDiscordJSAdapter,
+	playSong,
+	connectToChannel,
 }

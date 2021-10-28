@@ -11,6 +11,7 @@
 	  "esModuleInterop": true,
 	  "resolveJsonModule": true,
 	  "skipLibCheck": true, // needed to ignore .d.ts files in node_modules causing errors
+	  "downlevelIteration": true,
 	},
 	  "include": [
 		"src/*"

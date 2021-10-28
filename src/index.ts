@@ -3,7 +3,7 @@ import { config } from 'dotenv'
 config()
 
 const client = new Client({ 
-	intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_PRESENCES", "GUILD_MEMBERS"],
+	intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_PRESENCES", "GUILD_MEMBERS", "GUILD_VOICE_STATES"],
 })
 
 client.once('ready', () => {
