@@ -16,8 +16,8 @@ export { interaction }
 
 import ping from './commands/general/ping'
 import catjam from './commands/general/catjam'
-import jamtime from './commands/general/jamtime'
-import joinVoice from './commands/general/joinVoice'
+import jamtime from './commands/music/jamtime'
+import joinVoice from './commands/music/joinVoice'
 
 client.login(process.env.DISCORD_TOKEN)
 

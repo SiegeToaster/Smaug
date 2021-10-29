@@ -4,7 +4,7 @@ import {
 } from 'discord.js'
 import { SlashCommandBuilder } from '@discordjs/builders'
 import { createAudioPlayer } from '@discordjs/voice'
-import { musicFunctions } from './../../functions/functionExports'
+import { musicFunctions } from '../../functions/functionExports'
 // https://github.com/discordjs/voice/blob/main/examples/basic/
 
 const player = createAudioPlayer()
@@ -28,4 +28,5 @@ export default async function joinVoice(interaction: CommandInteraction): Promis
 	}
 
 	musicFunctions.playSong(player)
+	
 } // ToDo: play songs other than the techno thing

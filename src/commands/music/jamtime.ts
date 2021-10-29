@@ -12,7 +12,7 @@ import {
 } from '@discordjs/builders'
 
 
-import { utilityFunctions } from './../../functions/functionExports'
+import { utilityFunctions } from '../../functions/functionExports'
 
 export const commandData = new SlashCommandBuilder()
 	.setName('jamtime')
