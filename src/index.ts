@@ -1,10 +1,12 @@
 import { Client } from "discord.js"
+import { AudioPlayer } from "@discordjs/voice"
 import { config } from 'dotenv'
 config()
 
 const client = new Client({ 
 	intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_PRESENCES", "GUILD_MEMBERS", "GUILD_VOICE_STATES"],
 })
+let player: AudioPlayer | void | undefined
 
 client.once('ready', () => {
 	console.log('Smaug is now online.')
@@ -18,10 +20,11 @@ import ping from './commands/general/ping'
 import catjam from './commands/general/catjam'
 import jamtime from './commands/music/jamtime'
 import joinVoice from './commands/music/joinVoice'
+import play from './commands/music/play'
 
 client.login(process.env.DISCORD_TOKEN)
 
-client.on('interactionCreate', interaction => {
+client.on('interactionCreate', async interaction => {
 	if (!interaction.isCommand()) return
 
 	console.log(`\nCommand: ${interaction.commandName}`)
@@ -42,7 +45,12 @@ client.on('interactionCreate', interaction => {
 	}
 
 	case 'joinvoice': {
-		joinVoice(interaction)
+		player = await joinVoice(interaction)
+		break
+	}
+
+	case 'play': {
+		play(interaction, player)
 		break
 	}
 	}
