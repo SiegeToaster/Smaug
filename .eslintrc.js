@@ -85,5 +85,6 @@ module.exports = {
       '@typescript-eslint/explicit-function-return-type': ['warn'],
 	  "no-unused-vars": "off",
 	  "@typescript-eslint/no-unused-vars": ["off"],
+	  "camelcase": "warn"
     },
   }
