@@ -7,7 +7,7 @@ export default function isUrl(string: string | null | undefined): boolean {
 	
 	try {
 		url = new URL(string)
-	} catch (_) {
+	} catch {
 		return false
 	}
   

@@ -45,7 +45,7 @@ client.on('interactionCreate', async interaction => {
 	}
 
 	case 'joinvoice': {
-		player = await joinVoice(interaction)
+		player = await joinVoice(interaction, true)
 		break
 	}
 

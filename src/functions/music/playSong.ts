@@ -7,14 +7,13 @@ import {
 } from '@discordjs/voice'
 import { URL } from 'url'
 
-export default function playSong(player: AudioPlayer, song: string, isUrl: boolean): Promise<AudioPlayer> | undefined {
+export default function playSong(player: AudioPlayer, song: string, isUrl: boolean): Promise<AudioPlayer> | void {
 	let url: URL
 	try {
 		url = new URL(song)
-	} catch {
-		return
+	} catch (err) {
+		return console.log(err)
 	}
-	console.log(url)
 	console.log(url.toJSON())
 
 	const resource = createAudioResource(url.toJSON(), {

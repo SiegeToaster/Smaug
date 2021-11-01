@@ -5,6 +5,7 @@
   "main": "build/index.js",
   "scripts": {
     "build": "tsc",
+	"d": "tsc && node build/index.js",
     "dev": "tsc && node build/index.js",
     "lint": "eslint src/**",
     "start": "node build/index.js",

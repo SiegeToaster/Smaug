@@ -22,10 +22,10 @@ export default async function joinVoice(interaction: CommandInteraction, sendMes
 	try {
 		const connection = await musicFunctions.connectToChannel(channel)
 		connection.subscribe(player)
-		if (sendMessage) await interaction.reply('Joining channel')
+		if (sendMessage) await interaction.reply(`Joining ${channel.name}`)
 	} catch (err) {
 		console.error('joinVoice connection error: ', err)
 	}
 
 	return player
-} // ToDo: play songs other than the techno thing
+}
