@@ -7,14 +7,15 @@ import {
 } from '@discordjs/voice'
 import { URL } from 'url'
 
-export default function playSong(player: AudioPlayer, song: string, isUrl: boolean): Promise<AudioPlayer> | void {
+export default async function playSong(player: AudioPlayer, song: string, isUrl: boolean): Promise<AudioPlayer | void> {
 	let url: URL
 	try {
 		url = new URL(song)
 	} catch (err) {
-		return console.log(err)
+		// await used to get Promise<void> return type
+		return await console.log('playsong new URL error: ', err)
 	}
-	console.log(url.toJSON())
+	console.log(url.toJSON()) // DEBUG
 
 	const resource = createAudioResource(url.toJSON(), {
 		inputType: StreamType.Arbitrary,
