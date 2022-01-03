@@ -26,17 +26,14 @@ export default async function play(interaction: CommandInteraction, player: Audi
 		return console.error('play player undefined error')
 	}
 
-	const requestedSong = interaction.options.getString('song')
+	let requestedSong = interaction.options.getString('song')
 	if (!requestedSong) return await interaction.reply('No song found')
+	if (!utilityFunctions.isUrl(requestedSong)) requestedSong = await musicFunctions.soundcloudSearch(requestedSong)
 
-	if (utilityFunctions.isUrl(requestedSong)) {
-		const playSongReturn = await musicFunctions.playSong(player, requestedSong, true)
-		if (playSongReturn) return await interaction.reply('Playing song')
+	const playSongReturn = await musicFunctions.playSong(player, requestedSong, true)
+	if (playSongReturn) return await interaction.reply('Playing song')
 
-		interaction.reply('could not play song')
+	interaction.reply('could not play song')
 
-		return console.error('play error: could not play song')
-	}
-	
-	return await interaction.reply('idk how to search for songs')
+	return console.error('play error: could not play song')
 }

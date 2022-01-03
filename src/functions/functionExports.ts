@@ -14,8 +14,10 @@ export const utilityFunctions = {
 import createDiscordJSAdapter from "./music/createDiscordJSAdapter"
 import playSong from "./music/playSong"
 import connectToChannel from "./music/connectToChannel"
+import soundcloudSearch from "./music/soundcloudSearch"
 export const musicFunctions = {
 	createDiscordJSAdapter,
 	playSong,
 	connectToChannel,
+	soundcloudSearch,
 }
