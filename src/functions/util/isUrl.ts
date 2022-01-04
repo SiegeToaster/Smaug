@@ -10,6 +10,6 @@ export default function isUrl(string: string | null | undefined): boolean {
 	} catch {
 		return false
 	}
-  
+	
 	return url.protocol === "http:" || url.protocol === "https:"
 }

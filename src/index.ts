@@ -1,7 +1,6 @@
 import { Client } from "discord.js"
 import { AudioPlayer } from "@discordjs/voice"
 import { config } from 'dotenv'
-import https from 'https'
 config()
 
 const client = new Client({ 
@@ -24,6 +23,9 @@ import joinVoice from './commands/music/joinVoice'
 import play from './commands/music/play'
 
 client.login(process.env.DISCORD_TOKEN)
+
+// import { musicFunctions } from './functions/functionExports'
+// musicFunctions.soundcloudSearch("Pink Floyd")
 
 client.on('interactionCreate', async interaction => {
 	if (!interaction.isCommand()) return
