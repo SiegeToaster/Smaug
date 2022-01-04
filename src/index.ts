@@ -24,9 +24,6 @@ import play from './commands/music/play'
 
 client.login(process.env.DISCORD_TOKEN)
 
-// import { musicFunctions } from './functions/functionExports'
-// musicFunctions.soundcloudSearch("Pink Floyd")
-
 client.on('interactionCreate', async interaction => {
 	if (!interaction.isCommand()) return
 
