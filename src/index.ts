@@ -16,8 +16,9 @@ client.once('ready', () => {
 let interaction
 export { interaction }
 
-import ping from './commands/general/ping'
+import absent from './commands/general/absent'
 import catjam from './commands/general/catjam'
+import ping from './commands/general/ping'
 import jamtime from './commands/music/jamtime'
 import joinVoice from './commands/music/joinVoice'
 import play from './commands/music/play'
@@ -29,29 +30,35 @@ client.on('interactionCreate', async interaction => {
 
 	console.log(`\nCommand: ${interaction.commandName}`)
 	switch (interaction.commandName) {
-	case 'ping': {
-		ping(interaction)
-		break
-	}
+		case 'absent': {
+			absent(interaction)
+			break
+		}
 
-	case 'catjam': {
-		catjam(interaction)
-		break
-	}
 
-	case 'jamtime': {
-		jamtime(interaction)
-		break
-	}
+		case 'catjam': {
+			catjam(interaction)
+			break
+		}
+		
+		case 'ping': {
+			ping(interaction)
+			break
+		}
 
-	case 'joinvoice': {
-		player = await joinVoice(interaction, true)
-		break
-	}
+		case 'jamtime': {
+			jamtime(interaction)
+			break
+		}
 
-	case 'play': {
-		play(interaction, player)
-		break
-	}
+		case 'joinvoice': {
+			player = await joinVoice(interaction, true)
+			break
+		}
+
+		case 'play': {
+			play(interaction, player)
+			break
+		}
 	}
 })

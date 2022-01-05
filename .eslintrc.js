@@ -20,7 +20,7 @@ module.exports = {
       'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
       'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
       'semi': ['error', 'never'],
-      "indent": ["warn", "tab"],
+      'indent': ["warn", "tab", { "SwitchCase": 1 }],
       'array-bracket-newline': ['off', 'consistent'],
       'array-element-newline': ['off', {
         multiline: true,
