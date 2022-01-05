@@ -20,10 +20,10 @@ Notes:
 // const testUrl = "https://api-v2.soundcloud.com/media/soundcloud:tracks:272314661/0e7792c9-34c5-4dde-9936-40ddcd95e5b5/stream/hls?client_id=atkWGyMg57QFFAwK5c9VpC1N5Q141g7I"
 
 export default async function soundcloudSearch(requestedSong: string): Promise<string> {
+	// ToDo: make compatible with mention inputs (e.g, @siege)
 	let songID: string | undefined
 	let mediaUrlKey: string
 	if (utilityFunctions.isUrl(requestedSong)) {
-		// use track info from link example
 		const trackUrl = `https://api-widget.soundcloud.com/resolve?url=${requestedSong}&client_id=atkWGyMg57QFFAwK5c9VpC1N5Q141g7I`
 		const trackPromise: string[] = await new Promise((resolve, reject) => {
 			const trackRequest = https.get(trackUrl, (res) => {
