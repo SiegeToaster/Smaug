@@ -12,32 +12,58 @@ export const commandData = new SlashCommandBuilder()
 export default async function absent(interaction: CommandInteraction): Promise<void> {
 	let allUsers: Collection<Snowflake, GuildMember | undefined> | undefined = new Collection()
 	let allUsersStringArr = [interaction.options.getString('user')?.trim()]
+	let invalidInputs = ''
+	console.log((await interaction.guild?.roles.fetch('928912692687818773'))?.members)
 
-	if (allUsersStringArr[0]) { // ToDo: add functionality for roles
+	if (allUsersStringArr[0]) {
+		invalidInputs = 'Some of the requested users are invalid:\n' // string is length 41
 		allUsersStringArr = allUsersStringArr[0].split(',')
+
 		for (let user of allUsersStringArr) {
 			if (!user) continue
 			user = user.trim()
-			if (user.length !== 22 || !user.match(/<@![0-9]+>/g /* RegExp for a user mention */)) continue
-			// ToDo: log invalid users to string and add to reply.
+			if (user.length !== 22 || !(user.match(/<@![0-9]+>/g /* RegExp for a user mention */) || user.match(/<@&[0-9]+>/ /* RegExp for a role mention */))) {
+				invalidInputs += `${user},\n`
+
+				continue
+			}
+
 			user = user.slice(3, 21)
-			allUsers.set(user, await interaction.guild?.members.fetch(user))
+			try {
+				if (user.match(/<@![0-9]+>/g /* RegExp for a user mention */)) {
+					allUsers.set(user, await interaction.guild?.members.fetch(user))
+				} else {
+					const roleMembers: Collection<Snowflake, GuildMember> | undefined = (await interaction.guild?.roles.fetch(user))?.members
+					if (!roleMembers) throw new Error('Undefined role members')
+					allUsers = allUsers.concat(roleMembers)
+				}
+			} catch (err) {
+				interaction.reply('Failed to fetch server members.')
+
+				return console.error(`absent error: failed to fetch guild member/role id: ${user} - ${err}`)
+			}
 		}
-		// ToDo: if length of allUsers is still 0 (i.e, only invalid arguments passed), run the else code
-	} else {
+		
+		if (invalidInputs.length === 41) {
+			invalidInputs = ''
+		} else {
+			invalidInputs = invalidInputs.slice(0, invalidInputs.length - 2)
+		}
+	}
+
+	if (allUsers.size === 0) {
 		allUsers = await interaction.guild?.members.fetch()
 		allUsers = allUsers?.filter(user => !user?.user.bot)
 	}
 
-	if (!allUsers || allUsers.size < 1) {
+	if (!allUsers) {
 		interaction.reply('Failed to fetch server members.')
 
 		return console.error('absent error: failed to fetch guild members - allUsers undefined')
 	}
 	
 	const offlineUsers: string[] = []
-	for (let i = 0; i < allUsers.size; i++) {
-		const user = allUsers.at(i)
+	for (const user of allUsers.values()) {
 		if (!user) continue
 		if (!user.presence) { // I *think* null presence means offline
 			offlineUsers.push(user.nickname ? user.nickname : user.user.username)
@@ -50,17 +76,17 @@ export default async function absent(interaction: CommandInteraction): Promise<v
 
 	switch (offlineUsers.length) {
 		case 0: {
-			interaction.reply('No one is absent.')
+			interaction.reply(`${invalidInputs}\n\nNo one is absent.`)
 			break
 		}
 
 		case 1: {
-			interaction.reply(`${offlineUsers[0]} is absent.`)
+			interaction.reply(`${invalidInputs}\n\n${offlineUsers[0]} is absent.`)
 			break
 		}
 
 		case 2: {
-			interaction.reply(`${offlineUsers[0]} and ${offlineUsers[1]} are absent`)
+			interaction.reply(`${invalidInputs}\n\n${offlineUsers[0]} and ${offlineUsers[1]} are absent`)
 			break
 		}
 
@@ -76,7 +102,7 @@ export default async function absent(interaction: CommandInteraction): Promise<v
 				}
 			}
 
-			interaction.reply(`${str} are absent`)
+			interaction.reply(`${invalidInputs}\n\n${str} are absent`)
 			break
 		}
 	}
