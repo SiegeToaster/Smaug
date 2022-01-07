@@ -1,5 +1,6 @@
-export { commandData as pingCommandData } from './general/ping'
+export { commandData as absentCommandData } from './general/absent'
 export { commandData as catjamCommandData } from './general/catjam'
+export { commandData as pingCommandData } from './general/ping'
 export { commandData as jamtimeCommandData } from './music/jamtime'
 export { commandData as joinVoiceCommandData } from './music/joinVoice'
 export { commandData as playCommandData } from './music/play'
