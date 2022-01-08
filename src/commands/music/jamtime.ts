@@ -63,60 +63,60 @@ export default async function jamtime(interaction: CommandInteraction): Promise<
 	const collector = interaction.channel?.createMessageComponentCollector({ filter })
 	collector?.on('collect', async i => {
 		switch (i.customId) {
-		case 'yesButton': {
-			const userReacted = !(jammersString.search(`${i.user.id}`) !== -1 || nonJammersString.search(`${i.user.id}`) !== -1)
-			if (userReacted) {
-				jammersString == '\u200b' ?
-					jammersString = `<@!${i.user.id}>` :
-					jammersString += `\n<@!${i.user.id}>`
+			case 'yesButton': {
+				const userReacted = !(jammersString.search(`${i.user.id}`) !== -1 || nonJammersString.search(`${i.user.id}`) !== -1)
+				if (userReacted) {
+					jammersString == '\u200b' ?
+						jammersString = `<@!${i.user.id}>` :
+						jammersString += `\n<@!${i.user.id}>`
+				}
+			
+				embedsArray = [new MessageEmbed()]
+				if (hasTimeout) embedsArray[0].addField('Timeout Time Remaining:', `${utilityFunctions.secondsToMinutes(timeoutTime, true)}`)
+				embedsArray[0]
+					.addField('Present Jammers:', `${jammersString}`, true)
+					.addField('Absent Jammers:', `${nonJammersString}`, true)
+			
+				await i.update({
+					content: `@everyone jamtime?`,
+					components: [row],
+					embeds: embedsArray,
+				})
+
+				if (userReacted)
+					await i.followUp(`<@!${i.user.id}> Present Jammer`)
+
+				if (jammersString == '\u200b' ? 0 : jammersString.split('\n').length >= (await utilityFunctions.countGuildMembers(interaction.guild)))
+					await i.followUp('@everyone reacted yes.')
+
+				break
 			}
-			
-			embedsArray = [new MessageEmbed()]
-			if (hasTimeout) embedsArray[0].addField('Timeout Time Remaining:', `${utilityFunctions.secondsToMinutes(timeoutTime, true)}`)
-			embedsArray[0]
-				.addField('Present Jammers:', `${jammersString}`, true)
-				.addField('Absent Jammers:', `${nonJammersString}`, true)
-			
-			await i.update({
-				content: `@everyone jamtime?`,
-				components: [row],
-				embeds: embedsArray,
-			})
-
-			if (userReacted)
-				await i.followUp(`<@!${i.user.id}> Present Jammer`)
-
-			if (jammersString == '\u200b' ? 0 : jammersString.split('\n').length >= (await utilityFunctions.countGuildMembers(interaction.guild)))
-				await i.followUp('@everyone reacted yes.')
-
-			break
-		}
 	
-		case 'noButton': {
-			const userReacted = !(jammersString.search(`${i.user.id}`) !== -1 || nonJammersString.search(`${i.user.id}`) !== -1)
-			if (userReacted) {
-				nonJammersString == '\u200b' ?
-					nonJammersString = `<@!${i.user.id}>` :
-					nonJammersString += `\n<@!${i.user.id}>`
+			case 'noButton': {
+				const userReacted = !(jammersString.search(`${i.user.id}`) !== -1 || nonJammersString.search(`${i.user.id}`) !== -1)
+				if (userReacted) {
+					nonJammersString == '\u200b' ?
+						nonJammersString = `<@!${i.user.id}>` :
+						nonJammersString += `\n<@!${i.user.id}>`
+				}
+			
+				embedsArray = [new MessageEmbed()]
+				if (hasTimeout) embedsArray[0].addField('Timeout Time Remaining:', `${utilityFunctions.secondsToMinutes(timeoutTime, true)}`)
+				embedsArray[0]
+					.addField('Present Jammers:', `${jammersString}`, true)
+					.addField('Absent Jammers:', `${nonJammersString}`, true)
+			
+				await i.update({
+					content: `@everyone jamtime?`,
+					components: [row],
+					embeds: embedsArray,
+				})
+
+				if (userReacted)
+					await i.followUp(`<@!${i.user.id}> Absent Jammer`)
+
+				break
 			}
-			
-			embedsArray = [new MessageEmbed()]
-			if (hasTimeout) embedsArray[0].addField('Timeout Time Remaining:', `${utilityFunctions.secondsToMinutes(timeoutTime, true)}`)
-			embedsArray[0]
-				.addField('Present Jammers:', `${jammersString}`, true)
-				.addField('Absent Jammers:', `${nonJammersString}`, true)
-			
-			await i.update({
-				content: `@everyone jamtime?`,
-				components: [row],
-				embeds: embedsArray,
-			})
-
-			if (userReacted)
-				await i.followUp(`<@!${i.user.id}> Absent Jammer`)
-
-			break
-		}
 		}
 	})
 

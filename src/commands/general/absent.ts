@@ -13,7 +13,6 @@ export default async function absent(interaction: CommandInteraction): Promise<v
 	let allUsers: Collection<Snowflake, GuildMember | undefined> | undefined = new Collection()
 	let allUsersStringArr = [interaction.options.getString('user')?.trim()]
 	let invalidInputs = ''
-	console.log((await interaction.guild?.roles.fetch('928912692687818773'))?.members)
 
 	if (allUsersStringArr[0]) {
 		invalidInputs = 'Some of the requested users are invalid:\n' // string is length 41
