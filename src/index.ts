@@ -2,6 +2,7 @@ import { Client } from "discord.js"
 import { AudioPlayer } from "@discordjs/voice"
 import { config } from 'dotenv'
 config()
+import mysql from 'mysql2' // original package doesn't support SHA-256 login, don't really need security but oh well
 
 const client = new Client({ 
 	intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_PRESENCES", "GUILD_MEMBERS", "GUILD_VOICE_STATES"],
@@ -11,6 +12,18 @@ let player: AudioPlayer | void | undefined
 client.once('ready', () => {
 	console.log('Smaug is now online.')
 	console.log('')
+})
+
+const sqlConnection = mysql.createConnection({
+	host: "127.0.0.1",
+	user: process.env.SQL_USERNAME,
+	password: process.env.SQL_PASSWORD,
+})
+
+sqlConnection.connect(err => {
+	if (err) return console.error(`Failed to connect to SLQ: ${err}`)
+	console.log("SQL Connected Successfully")
+	// ToDo: check for proper database and tables and setup if required
 })
 
 let interaction
