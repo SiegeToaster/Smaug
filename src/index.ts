@@ -9,22 +9,23 @@ const client = new Client({
 })
 let player: AudioPlayer | void | undefined
 
-client.once('ready', () => {
-	console.log('Smaug is now online.')
-	console.log('')
-})
-
 const sqlConnection = mysql.createConnection({
 	host: "127.0.0.1",
 	user: process.env.SQL_USERNAME,
-	password: process.env.SQL_PASSWORD,
+	password: process.env.DISCORD_TOKEN,
+	database: "smaug",
 })
 
-sqlConnection.connect(err => {
-	if (err) return console.error(`Failed to connect to SLQ: ${err}`)
-	console.log("SQL Connected Successfully")
-	// ToDo: check for proper database and tables and setup if required
+client.once('ready', () => {
+	console.log('Smaug is now online.\n')
+	
+	sqlConnection.connect(err => {
+		if (err) return console.error(new Error(`Failed to connect to SLQ\nRecommend the error be fixed and the bot be restarted\n\n${err}`))
+		console.log("SQL Connected Successfully")
+		// ToDo: check for proper database and tables and setup if required
+	})
 })
+
 
 let interaction
 export { interaction }
