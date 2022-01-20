@@ -1,4 +1,5 @@
 import countGuildMembers from "./util/countGuildMembers"
+import initSQL from "./util/initSQL"
 import isAudioUrl from "./util/isAudioUrl"
 import isUrl from "./util/isUrl"
 import secondsToMinutes from "./util/secondsToMinutes"
@@ -6,6 +7,7 @@ import timer from "./util/timer"
 
 export const utilityFunctions = {
 	countGuildMembers,
+	initSQL,
 	isAudioUrl,
 	isUrl,
 	secondsToMinutes,

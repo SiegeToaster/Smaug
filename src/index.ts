@@ -1,4 +1,4 @@
-import { Client } from "discord.js"
+import { Client, OAuth2Guild } from "discord.js"
 import { AudioPlayer } from "@discordjs/voice"
 import { config } from 'dotenv'
 config()
@@ -12,18 +12,15 @@ let player: AudioPlayer | void | undefined
 const sqlConnection = mysql.createConnection({
 	host: "127.0.0.1",
 	user: process.env.SQL_USERNAME,
-	password: process.env.DISCORD_TOKEN,
+	password: process.env.SQL_PASSWORD,
 	database: "smaug",
 })
 
+let sqlReady
+
 client.once('ready', () => {
 	console.log('Smaug is now online.\n')
-	
-	sqlConnection.connect(err => {
-		if (err) return console.error(new Error(`Failed to connect to SLQ\nRecommend the error be fixed and the bot be restarted\n\n${err}`))
-		console.log("SQL Connected Successfully")
-		// ToDo: check for proper database and tables and setup if required
-	})
+	sqlReady = utilityFunctions.initSQL(client, sqlConnection)
 })
 
 
@@ -36,6 +33,7 @@ import ping from './commands/general/ping'
 import jamtime from './commands/music/jamtime'
 import joinVoice from './commands/music/joinVoice'
 import play from './commands/music/play'
+import { utilityFunctions } from "./functions/functionExports"
 
 client.login(process.env.DISCORD_TOKEN)
 
