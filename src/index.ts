@@ -1,4 +1,4 @@
-import { Client, OAuth2Guild } from "discord.js"
+import { Client } from "discord.js"
 import { AudioPlayer } from "@discordjs/voice"
 import { config } from 'dotenv'
 config()
@@ -20,7 +20,13 @@ let sqlReady
 
 client.once('ready', () => {
 	console.log('Smaug is now online.\n')
-	sqlReady = utilityFunctions.initSQL(client, sqlConnection)
+	sqlConnection.connect(async err => {
+		if (err) return console.error(new Error(`Failed to connect to SQL\nRecommend the error be fixed and the bot be restarted\n\n${err}`))
+		console.log("SQL Connected Successfully\n")
+		
+		sqlReady = utilityFunctions.initSQL(client, sqlConnection)
+	})
+	
 })
 
 
