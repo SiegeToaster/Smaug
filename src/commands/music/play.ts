@@ -30,19 +30,22 @@ export default async function play(interaction: CommandInteraction, player: Audi
 	let requestedSong = interaction.options.getString('song')
 	if (!requestedSong) return await interaction.reply('No song found')
 	
-	if (!utilityFunctions.isAudioUrl(requestedSong)) requestedSong = await musicFunctions.soundcloudSearch(requestedSong)
+	if (!utilityFunctions.isAudioUrl(requestedSong)) requestedSong = await musicFunctions.youtubeSearch(requestedSong)
+	// musicFunctions.soundcloudSearch(requestedSong)
 
 	if (!utilityFunctions.isUrl(requestedSong)) {
 		await interaction.editReply('No song found')
 
 		return
 	}
+
 	const playSongReturn = await musicFunctions.playSong(player, requestedSong)
 	if (playSongReturn) {
 		await interaction.editReply('Playing song')
 
 		return
 	}
+
 	interaction.editReply('could not play song')
 
 	return console.error('play error: could not play song')

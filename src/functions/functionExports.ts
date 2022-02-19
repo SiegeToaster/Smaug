@@ -19,9 +19,11 @@ import connectToChannel from "./music/connectToChannel"
 import createDiscordJSAdapter from "./music/createDiscordJSAdapter"
 import playSong from "./music/playSong"
 import soundcloudSearch from "./music/soundcloudSearch"
+import youtubeSearch from "./music/youtubeSearch"
 export const musicFunctions = {
 	connectToChannel,
 	createDiscordJSAdapter,
 	playSong,
 	soundcloudSearch,
+	youtubeSearch,
 }

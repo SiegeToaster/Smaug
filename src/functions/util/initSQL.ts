@@ -77,7 +77,7 @@ async function setupRateScores(sqlConnection: mysql.Connection, guildIDsArray: s
 		const values = valuesArr.join(', ')
 
 		sqlConnection.query(`INSERT INTO rateScores (clientID, guildID, totalScore, highestScore, ratesNum) VALUES ${values}`, (error1, result1) => {
-			if (error1) return console.error(new Error(`SQL query error: insert new guild into songQueue\n${error1}`))
+			if (error1) return console.error(new Error(`SQL query error: insert new guild into rateScores\n${error1}`))
 		})
 	})
 

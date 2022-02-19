@@ -6,7 +6,7 @@ import * as commandExports from './commands/commandExports'
 
 // eslint-disable-next-line camelcase
 // const commands: { name: Lowercase<string>, description: string, options: APIApplicationCommandOption[], default_permission: boolean | undefined }[] = []
-const commands = [] // ToDo: figure out the tyeps for this
+const commands = [] // ToDo: figure out the types for this
 let command: keyof typeof commandExports
 for (command in commandExports) {
 	// console.log(commandExports[command].toJSON()) // DEBUG

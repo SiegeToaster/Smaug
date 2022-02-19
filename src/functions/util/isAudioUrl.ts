@@ -93,7 +93,7 @@ export default function isAudioUrl(string: string | null | undefined): boolean {
 		*/
 	let result = false
 
-	for (const format of acceptableFormats) { // search for a better way to do this
+	for (const format of acceptableFormats) { // ToDo: search for a better way to do this
 		if (url.hostname.endsWith(format)) { // url.hostname untested, should work though (used to be string)
 			result = true
 			break

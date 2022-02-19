@@ -29,10 +29,7 @@ module.exports = {
       'array-bracket-spacing': ['error', 'never'],
       'block-spacing': ['error', 'always'],
       'brace-style': ['error', '1tbs', { allowSingleLine: true }],
-      camelcase: ['error', {
-        properties: 'always',
-        ignoreDestructuring: true, 
-      }],
+      camelcase: 'off',
       'eol-last': ['error', 'always'],
       'function-call-argument-newline': ['off', 'consistent'],
       'func-call-spacing': ['error', 'never'],
@@ -85,6 +82,5 @@ module.exports = {
       '@typescript-eslint/explicit-function-return-type': ['warn'],
 	  "no-unused-vars": "off",
 	  "@typescript-eslint/no-unused-vars": ["off"],
-	  "camelcase": "warn"
     },
   }
