@@ -24,7 +24,7 @@ export default async function soundcloudSearch(requestedSong: string): Promise<s
 	let songID: string | undefined
 	let mediaUrlKey: string
 	if (utilityFunctions.isUrl(requestedSong)) {
-		const trackUrl = `https://api-widget.soundcloud.com/resolve?url=${requestedSong}&client_id=atkWGyMg57QFFAwK5c9VpC1N5Q141g7I`
+		const trackUrl = `https://api-widget.soundcloud.com/resolve?url=${requestedSong}&client_id=${process.env.SOUNDCLOUD_CLIENT_ID}`
 		const trackPromise: string[] = await new Promise((resolve, reject) => {
 			const trackRequest = https.get(trackUrl, (res) => {
 				res.on('data', d => {
@@ -32,7 +32,7 @@ export default async function soundcloudSearch(requestedSong: string): Promise<s
 					resolve([`${result.id}`, `${result.media.transcodings.at(-1).url.split('/')[5]}`])
 				})
 			})
-	
+
 			trackRequest.on('error', error => {
 				console.error(`soundcloudSearch trackRequest error: ${error}`)
 				reject(error)
@@ -51,7 +51,7 @@ export default async function soundcloudSearch(requestedSong: string): Promise<s
 
 	
 	return await new Promise((resolve, reject) => {
-		const streamUrl = new URL(`https://api-v2.soundcloud.com/media/soundcloud:tracks:${songID}/${mediaUrlKey}/stream/hls?client_id=atkWGyMg57QFFAwK5c9VpC1N5Q141g7I`)
+		const streamUrl = new URL(`https://api-v2.soundcloud.com/media/soundcloud:tracks:${songID}/${mediaUrlKey}/stream/hls?client_id=${process.env.SOUNDCLOUD_CLIENT_ID}`)
 		const streamRequest = https.get(streamUrl.href, (res) => {
 			res.on('data', d => {
 				let result = JSON.parse(d)
@@ -70,13 +70,13 @@ export default async function soundcloudSearch(requestedSong: string): Promise<s
 
 async function search(requestedSong: string, offset: number, attempts: number): Promise<string[]> {
 	return await new Promise((resolve, reject) => {
-		const searchUrl = new URL(`https://api-v2.soundcloud.com/search?q=${requestedSong}&client_id=atkWGyMg57QFFAwK5c9VpC1N5Q141g7I&limit=${offset + 1}&offset=${offset}`)
+		const searchUrl = new URL(`https://api-v2.soundcloud.com/search?q=${requestedSong}&client_id=${process.env.SOUNDCLOUD_CLIENT_ID}&limit=${offset + 1}&offset=${offset}`)
 		const searchRequest = https.get(searchUrl.href, (res) => {
 			res.on('data', async d => {
 				let result
 				try {
 					result = await JSON.parse(d)
-					result = result.collection[0] // also need to get name, artist, etc for reply message
+					result = result.collection[0] // ToDo: get name, artist, etc for reply message
 					if (!result) throw new Error("")
 				} catch (_) {
 					if (attempts > 10) return console.error('soundcloudSearch error: unable to parse data to JSON')
@@ -84,14 +84,14 @@ async function search(requestedSong: string, offset: number, attempts: number): 
 				}
 
 				if (!(result.hasOwnProperty('media')) || result.monetization_model === "SUB_HIGH_TIER" /* 2nd part should only execute if 1st is false. */) {
-					// can't play GO+ (sub_high_tier) songs becuase client is not GO+
-					resolve(await search(requestedSong, offset + 1, attempts)) // some search requests are not songs, this hadnles that
+					// can't play GO+ (sub_high_tier) songs because client is not GO+
+					resolve(await search(requestedSong, offset + 1, attempts)) // some search requests are not songs, this handles that
 					
 					return
 				}
 				
 				resolve([`${result.id}`, `${result.media.transcodings.at(-1).url.split('/')[5]}`])
-				// at(-1) becuase, from what I've seen, the opus audio is last, but it isn't always there
+				// at(-1) because, from what I've seen, the opus audio is last, but it isn't always there
 			})
 		})
 

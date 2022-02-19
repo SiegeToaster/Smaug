@@ -19,9 +19,10 @@ export const commandData = new SlashCommandBuilder()
 
 
 export default async function play(interaction: CommandInteraction, player: AudioPlayer | void): Promise<void> {
+	interaction.reply('Requesting song...')
 	if (!player) player = await joinVoice(interaction, false)
 	if (!player) {
-		await interaction.reply('Unable to join voice channel or fetch channel info')
+		await interaction.editReply('Unable to join voice channel or fetch channel info')
 
 		return console.error('play player undefined error')
 	}
@@ -31,11 +32,18 @@ export default async function play(interaction: CommandInteraction, player: Audi
 	
 	if (!utilityFunctions.isAudioUrl(requestedSong)) requestedSong = await musicFunctions.soundcloudSearch(requestedSong)
 
-	if (!utilityFunctions.isUrl(requestedSong)) return await interaction.reply('No song found')
-	const playSongReturn = await musicFunctions.playSong(player, requestedSong)
-	if (playSongReturn) return await interaction.reply('Playing song')
+	if (!utilityFunctions.isUrl(requestedSong)) {
+		await interaction.editReply('No song found')
 
-	interaction.reply('could not play song')
+		return
+	}
+	const playSongReturn = await musicFunctions.playSong(player, requestedSong)
+	if (playSongReturn) {
+		await interaction.editReply('Playing song')
+
+		return
+	}
+	interaction.editReply('could not play song')
 
 	return console.error('play error: could not play song')
 }
