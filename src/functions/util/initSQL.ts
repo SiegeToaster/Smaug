@@ -5,7 +5,7 @@ export default async function initSQL(client: Client<boolean>, sqlConnection: my
 	const guildIDsArray: string[] = Array.from((await client.guilds.fetch()).keys())
 
 	const songQueue = await setupSongQueue(sqlConnection, guildIDsArray)
-	const rateScore = await setupRateScores(sqlConnection, guildIDsArray)
+	const rateScore = await setupRateScores(sqlConnection, client, guildIDsArray)
 
 	return songQueue && rateScore // && all other vars
 }
@@ -48,13 +48,13 @@ async function setupSongQueue(sqlConnection: mysql.Connection, guildIDsArray: st
 	return true
 }
 
-async function setupRateScores(sqlConnection: mysql.Connection, guildIDsArray: string[]): Promise<void | boolean> {
+async function setupRateScores(sqlConnection: mysql.Connection, client: Client<boolean>, guildIDsArray: string[]): Promise<void | boolean> {
 	sqlConnection.query('CREATE TABLE IF NOT EXISTS rateScores (clientID VARCHAR(18), guildID VARCHAR(18), totalScore BIGINT UNSIGNED, highestScore TINYINT UNSIGNED, ratesNum BIGINT UNSIGNED)', (err, result) => {
 		if (err) return console.error(new Error(`SQL query error: create rateScores table\n${err}`))
 	})
 	const newguilds = String(...guildIDsArray)
 
-	sqlConnection.query(`SELECT * FROM rateScores WHERE guildID in (${newguilds})`, (err, result) => {
+	sqlConnection.query(`SELECT * FROM rateScores WHERE guildID in (${newguilds})`, async (err, result) => {
 		if (err) return console.error(new Error(`SQL query error: fetch rateScores guildIDs\n${err}`))
 		if (result !== [] && !(Symbol.iterator in Object(result))) return console.error(new Error(`SQL query error: improper result type - result: ${result}`))
 
@@ -64,7 +64,11 @@ async function setupRateScores(sqlConnection: mysql.Connection, guildIDsArray: s
 			presentGuilds.push(guild.guildID)
 		}
 		const guildsToAdd: string[] = guildIDsArray.filter(guild => !presentGuilds.includes(guild))
-		const clientsToAdd: string[] = [''] // ToDo: find clients to add
+		const clientsToAdd: string[] = [] // ToDo: find clients to add
+
+		for (const guild in guildsToAdd) {
+			console.log((await client.guilds.fetch(guild))) // error
+		}
 
 		if (guildsToAdd.length <= 0) return
 
@@ -77,7 +81,7 @@ async function setupRateScores(sqlConnection: mysql.Connection, guildIDsArray: s
 		const values = valuesArr.join(', ')
 
 		sqlConnection.query(`INSERT INTO rateScores (clientID, guildID, totalScore, highestScore, ratesNum) VALUES ${values}`, (error1, result1) => {
-			if (error1) return console.error(new Error(`SQL query error: insert new guild into rateScores\n${error1}`))
+			if (error1) return console.error(new Error(`SQL query error: insert new guild into songQueue\n${error1}`))
 		})
 	})
 
